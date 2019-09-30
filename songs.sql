@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS tracks;
 CREATE TABLE tracks(
 	title VARCHAR,
 	artist VARCHAR,
-	length VARCHAR,
+	length TIME,
 	link VARCHAR primary key,
 	artwork VARCHAR,
 	UNIQUE(link),

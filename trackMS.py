@@ -1,4 +1,7 @@
 import flask
+import flask_api
+import sys
+from flask_api import status, exceptions
 from flask import request, jsonify, g
 import sqlite3
 
@@ -41,4 +44,63 @@ def init_db():
         with app.open_resource('songs.sql', mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
+#TODO place holder method to be changed later
+@app.route('/', methods=['GET'])   
+def default():
+    return '''<h1>Place Holder<h1>'''
+
+#method that decides whehter request is
+# to get specified track based on vars passed through url 
+# or to add new song
+@app.route('/v1/tracks', methods=['GET', 'POST'])
+def tracks():
+    if request.method == 'GET':
+        return find_song(request.args)
+    elif request.method == 'POST':
+        return add_song(request.data)
+
+#takes arguments from url and use to construct a query to 
+#find songs matching the specifications given
+def find_song(args):
+    title = args.get('title')
+    artist = args.get('artist')
+    loc = args.get('link')
+    len = args.get('len')
+    art = args.get('artwork')
+
+    query="SELECT * FROM songs WHERE"
+    q_args=[]
+
+    if title:
+        query +=" title=? AND"
+        q_args.append(title)
+    
+    if artist:
+        query+=" artist=? AND"
+        q_args.append(aritist)
+    
+    if loc:
+        query+=" link=? AND"
+        q_args.append(loc)
+    
+    #can optionally specify a comparson symbol at end of variable
+    # defaults to = 
+    if len:
+        op='='
+        symbs="=<>"
+        if len[-1] is in symbs:
+            op=len[-1]
+            len=len[:-1]
+        query+=" length" + op + "? AND"
+        q_args.append(len)
+
+    if art:
+        query += " artwork=? AND"
+        q_args.append(art)
+
+    query = query[:-4] + ';'
+
+    return jsonify(query_db(query, q_args))
+
+
 
