@@ -36,6 +36,9 @@ def query_db(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
+def insert_db(insert, args=()):
+    cur = get_db().execute(insert, args)
+    cur.close()
 
 @app.cli.command('init')
 def init_db():
@@ -44,6 +47,8 @@ def init_db():
         with app.open_resource('songs.sql', mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
+
+
 #TODO place holder method to be changed later
 @app.route('/', methods=['GET'])   
 def default():
@@ -68,7 +73,7 @@ def find_song(args):
     len = args.get('len')
     art = args.get('artwork')
 
-    query="SELECT * FROM songs WHERE"
+    query="SELECT * FROM tracks WHERE"
     q_args=[]
 
     if title:
@@ -77,7 +82,7 @@ def find_song(args):
     
     if artist:
         query+=" artist=? AND"
-        q_args.append(aritist)
+        q_args.append(artist)
     
     if loc:
         query+=" link=? AND"
@@ -85,13 +90,16 @@ def find_song(args):
     
     #can optionally specify a comparson symbol at end of variable
     # defaults to = 
+    # times must be entered in MM:SS format with leading zeros,
+    # minutes and seonds must not exceed 59
+    # if times are to exceed 1hour then errors may occur
     if len:
         op='='
         symbs="=<>"
-        if len[-1] is in symbs:
+        if len[-1] in symbs:
             op=len[-1]
             len=len[:-1]
-        query+=" length" + op + "? AND"
+        query+=" time(length)" + op + "time(?) AND"
         q_args.append(len)
 
     if art:
