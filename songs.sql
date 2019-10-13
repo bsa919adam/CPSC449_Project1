@@ -10,3 +10,5 @@ CREATE TABLE tracks(
 	UNIQUE(title, artist, length)	
 );
   
+Insert into tracks(title, artist, length, link, artwork)
+VALUES("Yesterday", "Beetles","2:00", "C://music//yesterday.mp3", "https://beetlesArtwork")
