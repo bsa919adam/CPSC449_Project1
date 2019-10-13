@@ -47,36 +47,12 @@ def init_db():
         with app.open_resource('songs.sql', mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
-
-@app.route('/')
-def default():
-    return "<h1>Placeholder<h1>"
-
-
-@app.route('/api/v1/playlists', methods=["GET","POST","DELETE"])
-def playlists():
-    if request.method =='GET':
-        retrieve(request.args)
-    elif request.method=='POST':
-        edit(request.args, request.data)
-    else:
-        delete(request.args)
-
-#TODO
-def request(args):
-    pass
-
-#TODO
-def edit(ars, data):
-    pass
-
-#TODO Test delete
-def delete(args):
+def createQuery(args):
     user=args.get(creator)
     title=args.get(title)
     descripton=args.get(description)
-    s_qargs=[]
-    s_query="SELECT id FROM playlists WHERE"
+    qargs=[]
+    query="WHERE"
     
     if user:
         query+=" CREATOR=? AND"
@@ -90,10 +66,55 @@ def delete(args):
         query+=" DESCRIPTION=? AND"
         qargs.append(description)
 
-    if len(qargs)==0:
-        return {"MESSAGE":"PLEASE SPECIFY PLAYLST"}, status.HTTP_204_NO_CONTENT
-
+    
     query=query[:-4]
+    return query, qargs
+
+@app.route('/')
+def default():
+    return "<h1>Placeholder<h1>"
+
+
+@app.route('/api/v1/playlists', methods=["GET","DELETE"])
+def playlists():
+    if request.method =='GET':
+        return retrieve(request.args)
+    else:
+        return delete(request.args)
+
+#TODO
+def retrieve(args):
+    s_query, s_qargs= createQuery(args)
+    s_query= "SELECT * FROM playlists "+ s_query
+    if len(s_qargs) == 0:
+        return {"MESASGE":'Please enter values to search for'}, status.HTTP_404_NOT_FOUND
+    
+    try:
+        result = query_db(s_query, s_qargs)
+    except Exception as e:
+            return {'error': str(e)}, status.HTTP_404_NOT_FOUND
+    
+    for x in result:
+        id = x.get(id)
+        if not id:
+            raise exceptions.NotFound()
+
+        query= "SELECT track_url FROM playlist_tracks WHERE playlist_id=?"
+        qargs=[id]
+        tracks= query_db(query, qargs)
+        x.update({"tracks":tracks}) 
+
+    return result, status.HTTP_200_OKAY 
+
+
+
+#TODO Test delete
+def delete(args):
+    
+    s_query, s_qargs= createQuery(args)
+    if len(s_qargs)==0:
+        return {"MESSAGE":"PLEASE SPECIFY PLAYLST"}, status.HTTP_404_NOT_FOUND
+    s_query='SELECT id FROM playlists' + s_query
     d_query="DELETE FROM playlist_tracks WHERE plalist_id IN ("+s_query+')'
     query_db(d_query, s_qargs)
 
