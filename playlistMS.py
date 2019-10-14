@@ -96,9 +96,10 @@ def retrieve(args):
             return {'error': str(e)}, status.HTTP_404_NOT_FOUND
     
     result = appendTracks(result)
-    
-    return result, status.HTTP_200_OK 
-
+    if result:
+        return result, status.HTTP_200_OK 
+    else:
+        return result, status.HTTP_404_NOT_FOUND
 def appendTracks(result):
     for x in result:
         id = x.get('id')
@@ -117,11 +118,11 @@ def delete(args):
     s_query, s_qargs= createQuery(args)
     if len(s_qargs)==0:
         return {"MESSAGE":"PLEASE SPECIFY PLAYLST"}, status.HTTP_404_NOT_FOUND
-    s_query='SELECT id FROM playlists' + s_query
-    d_query="DELETE FROM playlist_tracks WHERE plalist_id IN ("+s_query+')'
+    s_query='SELECT id FROM playlists ' + s_query
+    d_query="DELETE FROM playlist_tracks WHERE playlist_id IN ("+s_query+')'
     query_db(d_query, s_qargs)
 
-    d_query=s_query.relplace("SELECT id", "DELETE")
+    d_query=s_query.replace("SELECT id", "DELETE")
     query_db(d_query, s_qargs)
 
     return {'MESSAGE':'Playlist deleted'}, status.HTTP_200_OK
@@ -164,9 +165,9 @@ def user_playlists(user):
 #TODO Test
 #json input format
 # {
-#     "title":"title",
-#     "creator":"creator",
-#     "description":"description",
+#     "title":"hello",
+#     "creator":"world",
+#     "description":"hope this works",
 #     "tracks":{
 #             "1":"url",
 #             "2":"url2"
@@ -181,7 +182,7 @@ def new_playlist():
             raise exceptions.ParseError()
 
         temp , q_args = createQuery(request.data)
-        query = "Insert into playlists(title, creator, Description) VALUES(?,?,?);"
+        query = "Insert into playlists( creator, title, Description) VALUES(?,?,?);"
         desc = request.data.get("description")
         if  desc: 
             pass
@@ -193,11 +194,11 @@ def new_playlist():
         except Exception as e:
             return {'error': str(e)}, status.HTTP_409_CONFLICT
         
-        query="SELECT id FROM playlists " +temp
-        qresult=query_db(query, q_args)
+        query="SELECT * FROM playlists " +temp
+        qresult=query_db(query, q_args, one=True)
         id = qresult.get('id')
         tracks = request.data.get('tracks')
-        query= "INSERT INTO playlist_tracks(playlist_id, track_url) VALUES(?,?)"
+        query= "INSERT INTO playlist_tracks(playlist_id, track_url) VALUES(?,?);"
         for x in tracks:
             try:
                 query_db(query, [id, tracks.get(x)])
