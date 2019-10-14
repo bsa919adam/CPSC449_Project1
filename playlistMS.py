@@ -48,9 +48,9 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 def createQuery(args):
-    user=args.get(creator)
-    title=args.get(title)
-    descripton=args.get(description)
+    user=args.get("creator")
+    title=args.get("title")
+    description=args.get("description")
     qargs=[]
     query="WHERE"
     
@@ -96,12 +96,12 @@ def retrieve(args):
             return {'error': str(e)}, status.HTTP_404_NOT_FOUND
     
     result = appendTracks(result)
-
+    
     return result, status.HTTP_200_OK 
 
 def appendTracks(result):
     for x in result:
-        id = x.get(id)
+        id = x.get('id')
         if not id:
             raise exceptions.NotFound()
 
@@ -163,15 +163,15 @@ def user_playlists(user):
 
 #TODO Test
 #json input format
-#{
-#     title:"title",
-#     creator:"creator",
-#     description:"description",
-# #   tracks:{
-#             1:url
-#             2:url
-# #   } 
-# # }
+# {
+#     "title":"title",
+#     "creator":"creator",
+#     "description":"description",
+#     "tracks":{
+#             "1":"url",
+#             "2":"url2"
+#     } 
+# }
 @app.route('/api/v1/playlists/new', methods=['GET','POST'])
 def new_playlist():
     if request.method =='POST':
@@ -183,7 +183,7 @@ def new_playlist():
         temp , q_args = createQuery(request.data)
         query = "Insert into playlists(title, creator, Description) VALUES(?,?,?);"
         desc = request.data.get("description")
-        if  art: 
+        if  desc: 
             pass
         else:
             q_args.append("NONE")         
@@ -194,12 +194,13 @@ def new_playlist():
             return {'error': str(e)}, status.HTTP_409_CONFLICT
         
         query="SELECT id FROM playlists " +temp
-        id = query_db(query, q_args).get('id')
+        qresult=query_db(query, q_args)
+        id = qresult.get('id')
         tracks = request.data.get('tracks')
         query= "INSERT INTO playlist_tracks(playlist_id, track_url) VALUES(?,?)"
         for x in tracks:
             try:
-                query_db(query, [id, tracks.get(x))
+                query_db(query, [id, tracks.get(x)])
             except Exception as e:
                 return {'error': str(e)}, status.HTTP_409_CONFLICT
         
