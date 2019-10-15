@@ -1,7 +1,8 @@
 
 /api/v1/tracks- used for retreiving tracks, editing, adn deleting
-
-/api/v1/tracks/new- used for adding new tracks(requires all values except for artwork)
+ex./api/v1/tracks?title=the Title 
+   ./api/v1/tracks?artist=Beetles & length=2:00
+/api/v1/tracks/new- used for adding new tracks(requires all values except for artwork)//doesn't need andy parameters
 format for any posts
 # {
 #     "title":"Free Fallin",
@@ -21,13 +22,18 @@ format for any posts
     
     
  /api/v1/playlists-used to retrieve playlists adn delete
+ ex.
+  /api/v1/playlists?creator=world
+  /api/vi/playlists?title=hello & description=hope this works
  
  
- /api/v1/playlists/all - used to retrive all plylists
  
- /api/v1/playlists/<user>- used to retrieve all playlist by a specied user
+ /api/v1/playlists/all - used to retrive all plylists //doesn't need any parameters
  
-/api/v1/playlists/new- used to add new playlists(requires everything but a description
+ /api/v1/playlists/<user>- used to retrieve all playlist by a specied user 
+ ex. /api/v1/playists/world  //passed in url not as parameter
+ 
+/api/v1/playlists/new- used to add new playlists(requires everything but a description //doesn't need any parameters
 ex. format
 # {
 #     "title":"hello",
