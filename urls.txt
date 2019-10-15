@@ -1,0 +1,50 @@
+
+/api/v1/tracks- used for retreiving tracks, editing, adn deleting
+
+/api/v1/tracks/new- used for adding new tracks(requires all values except for artwork)
+format for any posts
+# {
+#     "title":"Free Fallin",
+#     "artist":"Tom Petty",
+#     "length":"3:00",
+#     "link":"C://music//tom//Free",
+#     "artwork":"https://art/cool/pic"
+
+    
+# }
+        
+    # {"title":"Yester", "length":"3:00"}
+
+    # {"title":"Yesterday"}
+    # {"title": "PaperBack Writer", "artist":"The Beetles"}
+    
+    
+    
+ /api/v1/playlists-used to retrieve playlists adn delete
+ 
+ 
+ /api/v1/playlists/all - used to retrive all plylists
+ 
+ /api/v1/playlists/<user>- used to retrieve all playlist by a specied user
+ 
+/api/v1/playlists/new- used to add new playlists(requires everything but a description
+ex. format
+# {
+#     "title":"hello",
+#     "creator":"world",
+#     "description":"hope this works",
+#     "tracks":{
+#             "1":"url",
+#             "2":"url2"
+#     } 
+# }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
