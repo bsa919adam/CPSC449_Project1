@@ -65,3 +65,14 @@ VALUES
 	(1, "C://music//yesterday.mp3" ),
 	(1, "C://music//nowhere man.mp3"),
 	(1, "C://music//Sirit.mp3");
+
+INSERT INTO users(username,password,displayname,email,homepage)
+VALUES
+    ("Edward Cena","TOtoR0","Edna","ecena@yahoo.com","www.nowheretobefound.com")
+    ("Tony Montana","ToTan4","BigTony","BigTony@hotmail.com","www.idontexist.com")
+    ("Armand DeLaRosa","Arosa@1","ArmLaRosa","ArmLaRosa@gmail.com","www.whereismycheese.com")
+INSERT INTO descriptions(title,description,link)
+VALUES
+    ("my lost dog","an owner for the love of dogs has lost his pet resently","www.mydog.com/lostdog")
+    ("in the darkest day","the day doesnt seem bright for a lost soul that feels empty","www.emptyspace.com/darkness")
+    ("find me partying in heaven", "a person who likes to party and writes about how he will still party in heaven if he goes to heaven","www.heavensdoor.com/party")
