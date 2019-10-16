@@ -45,14 +45,13 @@ def query_db(query, args=(), one=False):
 def init_db():
     with app.app_context():
         db = get_db()
-        with app.open_resource('songs.sql', mode='r') as f:
+        with app.open_resource('music.sql', mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
 # method that takes provided dict args 
 # and return key=value for each element of
 # track table with AND in between
-# note len is done diffrently to 
-# acommadate < or > as well as =
+
 def create_tracks_Query(args):
     q_args=[]
     query=''
@@ -73,19 +72,9 @@ def create_tracks_Query(args):
         query+=" link=? AND"
         q_args.append(loc)
     
-    #TODO
-    #can optionally specify a comparson symbol at end of variable
-    # defaults to = 
-    # times must be entered in MM:SS format with leading zeros,
-    # minutes and seonds must not exceed 59
-    # if times are to exceed 1hour then errors may occur
+   
     if len:
-        op='='
-        # symbs="=<>"
-        # if len[-1] in symbs:
-        #     op=len[-1]
-        #     len=len[:-1]
-        # query+=" time(length)" + op + "time(?) AND"
+               
         query+=" length=? AND"
         q_args.append(len)
       
